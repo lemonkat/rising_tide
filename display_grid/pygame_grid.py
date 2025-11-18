@@ -5,6 +5,7 @@ using a specified system font.
 """
 import time
 import itertools
+import typing
 
 import numpy as np
 import pygame as pg
@@ -44,7 +45,7 @@ class PygameGrid(dg.Grid):
         surf: pg.Surface,
         font: str = DEFAULT_FONT,
         font_size: int = 24,
-        shape: tuple[int, int] | None = None,
+        shape: typing.Optional[tuple[int, int]] = None,
     ) -> None:
         """Constructs a PygameGrid.
         
@@ -71,7 +72,7 @@ class PygameGrid(dg.Grid):
     @classmethod
     def get_char_shape(
         cls,
-        font: pg.font.Font | None = None,
+        font: typing.Optional[pg.font.Font] = None,
         font_name: str = DEFAULT_FONT,
         font_size: int = 24,
     ) -> tuple[int, int, int, int]:

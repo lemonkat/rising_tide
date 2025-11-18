@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing
 
 import numpy as np
@@ -86,13 +88,12 @@ def is_near_water(terrain: list[list[int]], pos: tuple[int, int]) -> bool:
     return 0 in pos or BOARD_SIZE - 1 in pos    
 
 def rotate_move(
-    plr: int, move: tuple[tuple[int, int], tuple[int, int]] | None
-) -> tuple[tuple[int, int], tuple[int, int]] | None:
+    plr: int, move: tuple[tuple[int, int], tuple[int, int]]
+) -> tuple[tuple[int, int], tuple[int, int]]:
     """
     rotates a move from bot's POV to main POV
     """
-    if move is None:
-        return None
+
     (i1, j1), (i2, j2) = move
     for _ in range(plr):
         i1, j1 = BOARD_SIZE - 1 - j1, i1
@@ -124,14 +125,14 @@ class Bot(typing.NamedTuple):
     name: str
     code: str
     func: typing.Callable[
-        [list[list[int]], int], tuple[tuple[int, int], tuple[int, int]] | None
+        [list[list[int]], int], typing.Optional[tuple[tuple[int, int], tuple[int, int]]]
     ]
 
 def make_bot(
     name: str,
     code: str,
     func: typing.Callable[
-        [list[list[int]], int], tuple[tuple[int, int], tuple[int, int]] | None
+        [list[list[int]], int], typing.Optional[tuple[tuple[int, int], tuple[int, int]]]
     ],
 ) -> Bot:
     """

@@ -3,6 +3,8 @@
 It uses the `urwid` library as a backend to handle terminal control codes,
 mouse tracking, and color rendering.
 """
+import typing
+
 import numpy as np
 import urwid
 
@@ -104,7 +106,7 @@ class TermGrid(dg.Grid):
     def __init__(
         self,
         scr: urwid.display.raw.Screen,
-        shape: tuple[int, int] | None = None,
+        shape: typing.Optional[tuple[int, int]] = None,
     ) -> None:
         """Constructs a TermGrid.
         
@@ -151,11 +153,11 @@ class TermGrid(dg.Grid):
         """
         out = []
         for event in self.scr.get_input():
-            match event:
-                case str(key):
-                    mod, key = _split_mod_event(key)
-                    out.append(dg.KeyEvent(KEY_MAP.get(key, key), mod))
-                case (action, button, x, y):
-                    mod, action = _split_mod_event(action)
-                    out.append(dg.MouseEvent(button, "press" in action, (y, x), mod))
+            if isinstance(event, str):
+                mod, key = _split_mod_event(event)
+                out.append(dg.KeyEvent(KEY_MAP.get(key, key), mod))
+            else:
+                action, button, x, y= _split_mod_event(event)
+                mod, action = _split_mod_event(action)
+                out.append(dg.MouseEvent(button, "press" in action, (y, x), mod))
         return out

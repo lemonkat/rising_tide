@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 import time
 import traceback
@@ -33,7 +35,7 @@ class Board:
     def __init__(
         self,
         bots: list[util.Bot],
-        log_path: str | None = "log.txt",
+        log_path: typing.Optional[str] = "log.txt",
     ) -> None:
         self.bots = bots
         self.round_num = 0

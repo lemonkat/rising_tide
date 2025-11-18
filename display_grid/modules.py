@@ -41,9 +41,9 @@ class Module:
     
     def __init__(
         self, 
-        parent: M | None = None, 
-        box: tuple[int, int, int, int] | None = None, 
-        grid: dg.Grid | None = None,
+        parent: typing.Optional[M] = None, 
+        box: typing.Optional[tuple[int, int, int, int]] = None, 
+        grid: typing.Optional[dg.Grid] = None,
     ) -> None:
         """Constructs a Module.
 
@@ -239,7 +239,12 @@ class MainModule(Module):
 
 class ArrayDrawModule(Module):
     """A module for displaying a NumPy array of RGB data as colored blocks."""
-    def __init__(self, parent: Module, box: tuple[int, int, int, int] | None = None, res: int = 1) -> None:
+    def __init__(
+        self, 
+        parent: Module, 
+        box: typing.Optional[tuple[int, int, int, int]] = None, 
+        res: int = 1,
+    ) -> None:
         """Constructs an ArrayDrawModule.
 
         Args:
@@ -269,7 +274,7 @@ class BarModule(Module):
     def __init__(
         self,
         parent: Module,
-        box: tuple[int, int, int, int] | None = None,
+        box: typing.Optional[tuple[int, int, int, int]] = None,
         direction: int = 0, # 0=+i, 1=+j, 2=-i, 3=-j
     ) -> None:
         """Constructs a BarModule.
@@ -319,7 +324,7 @@ class ButtonTrigger(Module):
     def __init__(
         self,
         parent: Module,
-        box: tuple[int, int, int, int] | None = None,
+        box: typing.Optional[tuple[int, int, int, int]] = None,
         button: int = 0,
         mod: int = dg.KM_NONE,
         down_fn: typing.Callable[[], None] = lambda: None,
@@ -356,7 +361,7 @@ class KeyTrigger(Module):
     def __init__(
         self,
         parent: Module,
-        box: tuple[int, int, int, int] | None = None,
+        box: typing.Optional[tuple[int, int, int, int]] = None,
         key: str = " ",
         mod: int = dg.KM_NONE,
         fn: typing.Callable[[], None] = lambda: None,
@@ -390,7 +395,7 @@ class TextInputModule(Module):
     def __init__(
         self, 
         parent: Module,
-        box: tuple[int, int, int, int] | None = None,
+        box: typing.Optional[tuple[int, int, int, int]] = None,
         start_text: str = "", 
         empty_text: str = "",
         fg_color: tuple[int, int, int] = [255, 255, 255],
@@ -473,7 +478,11 @@ class TextInputModule(Module):
 
 class FPSMeter(Module):
     """A module that displays the current frames per second."""
-    def __init__(self, parent: Module, box: tuple[int, int, int, int] | None = None) -> None:
+    def __init__(
+        self, 
+        parent: Module, 
+        box: typing.Optional[tuple[int, int, int, int]] = None,
+    ) -> None:
         """Constructs an FPSMeter.
 
         Args:
@@ -501,7 +510,12 @@ class FPSMeter(Module):
         
 class BorderModule(Module):
     """A module that draws a border around its perimeter."""
-    def __init__(self, parent: Module, box: tuple[int, int, int, int] | None = None, depth: int = 1.0) -> None:
+    def __init__(
+        self, 
+        parent: Module, 
+        box: typing.Optional[tuple[int, int, int, int]] = None, 
+        depth: int = 1.0,
+    ) -> None:
         """Constructs a BorderModule.
 
         Args:
@@ -533,8 +547,8 @@ class TabModule(Module):
     def __init__(
         self, 
         parent: Module, 
-        box: tuple[int, int, int, int] | None = None,
-        tabs: list[Module] | None = None,
+        box: typing.Optional[tuple[int, int, int, int]] = None,
+        tabs: typing.Optional[list[Module]] = None,
     ) -> None:
         """Constructs a TabModule.
 
@@ -558,7 +572,7 @@ class TabModule(Module):
         return self._index
     
     @index.setter
-    def index(self, value: int | None) -> None:
+    def index(self, value: typing.Optional[int]) -> None:
         """Sets the active tab by its index."""
         if self._index is not None:
             self.tabs[self._index].stop()
@@ -567,49 +581,14 @@ class TabModule(Module):
             self.tabs[self._index].start()
 
     @property
-    def tab(self) -> Module | None:
+    def tab(self) -> typing.Optional[Module]:
         """The currently active tab module."""
         return self.tabs[self._index]
     
     @tab.setter
-    def tab(self, value: Module | None) -> None:
+    def tab(self, value: typing.Optional[Module]) -> None:
         """Sets the active tab by its module instance."""
         if value is None:
             self.index = None
         else:
             self.index = self.tabs.index(value)
-
-if __name__ == "__main__":
-    import PIL.Image as Image
-    import time
-
-    import pygame as pg
-
-    pg.init()
-
-    images = []
-    for i in range(10):
-        img = Image.open(f"temp/{i}.png").convert("RGB")
-        img = img.resize((64, 64))
-        images.append(np.array(img).reshape(64, 64, 3))
-    
-    clock = pg.time.Clock()
-    with MainModule((34, 68), enforce_shape=True, mode="terminal") as main_module:
-        # sb_module = ScoreboardModule(main_module)
-        border_module = BorderModule(main_module, None, 2)
-        arr_module = ArrayDrawModule(border_module, border_module.inner_box)
-        fps_module = FPSMeter(main_module, (0, 0, 1, 8))
-        while True:
-            for i in range(10):
-                arr_module.update(images[i])
-                clock.tick(60)
-                
-                main_module.tick()
-                main_module.draw()
-            
-            
-                
-    # curses.wrapper(main)
-
-    # scr = pg.display.set_mode(dg.PygameGrid.get_surf_shape((34, 68)))
-    # main(scr)

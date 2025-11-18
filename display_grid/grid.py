@@ -4,6 +4,8 @@ The Grid class is the fundamental data structure for representing a character-ba
 display region, using NumPy arrays for efficient manipulation of characters,
 colors, and text attributes.
 """
+import typing
+
 import numpy as np
 
 import display_grid as dg
@@ -58,9 +60,9 @@ class Grid:
         self,
         *values: object,
         pos: tuple[int, int] = (0, 0),
-        fg: tuple[int, int, int] | None = None,
-        bg: tuple[int, int, int] | None = None,
-        attrs: int | None = None,
+        fg: typing.Optional[tuple[int, int, int]] = None,
+        bg: typing.Optional[tuple[int, int, int]] = None,
+        attrs: typing.Optional[int] = None,
         sep: str = " ",
     ) -> None:
         """Prints text to the grid, wrapping at the edges.
@@ -87,10 +89,10 @@ class Grid:
 
     def fill(
         self,
-        char: str | None = None,
-        fg: tuple[int, int, int] | None = None,
-        bg: tuple[int, int, int] | None = None,
-        attrs: int | None = None,
+        char: typing.Optional[str] = None,
+        fg: typing.Optional[tuple[int, int, int]] = None,
+        bg: typing.Optional[tuple[int, int, int]] = None,
+        attrs: typing.Optional[int] = None,
     ) -> None:
         """Fills the entire grid with a given character, color, and/or attribute.
 
@@ -110,42 +112,6 @@ class Grid:
             self.bg[...] = bg
         if attrs is not None:
             self.attrs[...] = attrs
-
-    def bar_h(self, i: int, j0: float, j1: float) -> None:
-        """Draws a horizontal bar with sub-character precision.
-
-        Args:
-            i: The row index for the bar.
-            j0: The starting column index (can be a float).
-            j1: The ending column index (can be a float).
-        """
-        j0_int, j0_frac = int(np.floor(j0)), int(8 * (j0 - np.floor(j0)))
-        j1_int, j1_frac = int(np.floor(j1)), int(8 * (j1 - np.floor(j1)))
-        self.chars[i, j0_int: j1_int] = ord("█")
-
-        # swap color on left end
-        self.fg[i, j0_int], self.bg[i, j0_int] = np.copy(self.bg[i, j0_int]), np.copy(self.fg[i, j0_int])
-
-        self.chars[i, j0_int] = ord(dg.HORZ_BLOCKS[j0_frac])
-        self.chars[i, j1_int] = ord(dg.HORZ_BLOCKS[j1_frac])
-
-    def bar_v(self, i0: float, i1: float, j: int) -> None:
-        """Draws a vertical bar with sub-character precision.
-
-        Args:
-            i0: The starting row index (can be a float).
-            i1: The ending row index (can be a float).
-            j: The column index for the bar.
-        """
-        i0_int, i0_frac = int(np.floor(i0)), int(8 * (i0 - np.floor(i0)))
-        i1_int, i1_frac = int(np.floor(i1)), int(8 * (i1 - np.floor(i1)))
-        self.chars[i0_int: i1_int, j] = ord("█")
-
-        # swap color on top end
-        self.fg[i0_int, j], self.bg[i0_int, j] = np.copy(self.bg[i0_int, j]), np.copy(self.fg[i0_int, j])
-        
-        self.chars[i0_int, j] = ord(dg.BLOCKS[i0_frac])
-        self.chars[i1_int, j] = ord(dg.BLOCKS[i1_frac])
 
     def stamp(self, name: str, i: int, j: int) -> None:
         """Draws a pre-loaded graphic onto the grid.

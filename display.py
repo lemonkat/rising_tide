@@ -1,5 +1,6 @@
 import time
 import textwrap
+import typing
 
 import numpy as np
 
@@ -136,7 +137,7 @@ def run_game(
     bots: tuple[util.Bot, util.Bot, util.Bot, util.Bot], 
     mode: str = "terminal",
     pause_on_end: bool = True,
-    log_path: str | None = "log.txt",
+    log_path: typing.Optional[str] = "log.txt",
 ) -> tuple[int, int, int, int]:
     """
     run a game with the following bots, display mode, and log file, returning scores
