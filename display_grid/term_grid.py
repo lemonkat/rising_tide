@@ -157,7 +157,7 @@ class TermGrid(dg.Grid):
                 mod, key = _split_mod_event(event)
                 out.append(dg.KeyEvent(KEY_MAP.get(key, key), mod))
             else:
-                action, button, x, y= _split_mod_event(event)
+                action, button, x, y = event
                 mod, action = _split_mod_event(action)
                 out.append(dg.MouseEvent(button, "press" in action, (y, x), mod))
         return out
